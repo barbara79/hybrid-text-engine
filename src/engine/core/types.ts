@@ -23,5 +23,17 @@ export interface EngineInput<TContent> {
 export interface EngineOutput {
   title?: string
   body: string
+  sections?: Record<string, string>
   meta?: Record<string, string>
 }
+
+export interface JobApplicationContent {
+  role: string
+  company: string
+  experience: string
+  skills?: string[]
+  education?: string
+}
+
+
+
