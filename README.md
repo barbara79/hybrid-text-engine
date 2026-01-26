@@ -2,6 +2,21 @@
 
 Modular text-generation engine built with Next.js and TypeScript.
 
+## Project Overview
+
+This project implements a small, extensible text-generation engine designed to support multiple content domains (e.g., job applications, marketplaces). 
+Future development will include **AI-powered content generation** via pluggable providers, enabling smarter and more dynamic outputs.
+
+## Project Status
+
+Work in progress. Core architecture and modular EngineMode system are in place. 
+Planned improvements include:
+
+- AI provider integration for automated content generation
+- Additional content modes for new domains
+- Enhanced input validation and output normalization
+
+
 ## Features
 - Engine-based architecture
 - Multiple content modes
@@ -37,11 +52,18 @@ to support multiple content domains (e.g. job applications, marketplaces).
 
 ### Current Modes
 
-- **Job Application Mode**
-  Generates both:
-  - a tailored cover letter
-  - a structured resume / CV section
+**Job Application Mode** – Generates tailored cover letters and structured resume/CV sections.  
+Future modes will leverage **AI models** to provide richer, context-aware content for other domains.
 
-The architecture is intentionally designed to allow additional modes
-to be added with minimal changes to the core engine.
+## Author
 
+Barbara Palumbo 
+Backend & Full-Stack Software Developer 
+Clean Architecture, Observability & AI Enthusiast  
+
+[LinkedIn](https://www.linkedin.com/in/barbara-palumbo-b3356a18b)
+
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
