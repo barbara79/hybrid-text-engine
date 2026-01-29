@@ -4,7 +4,8 @@ import { EngineInput, EngineOutput, JobApplicationContent } from "../core/types"
 
 
 export const jobApplicationMode: EngineMode<JobApplicationContent> = {
-  name: "jobApplication",
+  id: "job",
+  name: "jobApplicationMode",
 
   buildPrompt(input: EngineInput<JobApplicationContent>) {
     const { role, company, experience, skills, education } = input.content

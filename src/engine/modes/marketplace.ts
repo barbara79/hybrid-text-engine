@@ -2,36 +2,47 @@ import { EngineMode } from "../core/mode"
 import { EngineInput } from "../core/types"
 
 export interface MarketplaceContent {
-  itemName: string
-  brand?: string
-  condition: string
-  details?: string
+  productName: string;
+  description: string;
+  price?: number;
+  audience?: string;
+  platform?: string;
 }
 
 export const marketplaceMode: EngineMode<MarketplaceContent> = {
-  name: "marketplace",
+  id: "marketplace",
+  name: "marketplaceMode",
 
   buildPrompt(input: EngineInput<MarketplaceContent>) {
-    const { itemName, brand, condition, details } = input.content
+      const { productName, description, price, platform } = input.content;
+      const { tone, audience } = input; 
 
-    return `
-Write a product description for an online marketplace.
+      return `
+Generate a product listing for an online marketplace.
 
-Item: ${itemName}
-Brand: ${brand ?? "Not specified"}
-Condition: ${condition}
-Details: ${details ?? "None"}
+Item: ${productName}
+Description: ${description}
+Price: ${price ?? "Not specified"}
+Platform: ${platform ?? "Not specified"}
 
-Tone: ${input.tone}
-Audience: ${input.audience}
+Tone: ${tone}
+Audience: ${audience}
 
 Return a clear title and a concise description.
-`
-  },
+`},
 
   formatOutput(raw: string) {
+    // Split first line as title, rest as description
+    const lines = raw.trim().split("\n").filter(Boolean);
+    const title = lines[0] || "Untitled Product";
+    const description = lines.slice(1).join("\n") || "No description";
+
     return {
+      sections: {
+        title,
+        body: description,
+      },
       body: raw.trim(),
-    }
-  },
+    };
+  }
 }

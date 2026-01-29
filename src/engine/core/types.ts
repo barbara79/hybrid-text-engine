@@ -21,11 +21,14 @@ export interface EngineInput<TContent> {
 }
 
 export interface EngineOutput {
-  title?: string
-  body: string
-  sections?: Record<string, string>
-  meta?: Record<string, string>
+  title?: string;
+  body: string;
+  sections: {
+    [key: string]: string;
+  };
+  meta?: Record<string, string>;
 }
+
 
 export interface JobApplicationContent {
   role: string
