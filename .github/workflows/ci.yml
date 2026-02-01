@@ -1,0 +1,44 @@
+name: Node.js CI
+
+# Trigger: manual, push, or pull request
+on:
+  workflow_dispatch:        # manual trigger
+  push:
+    branches: [ main, feature/* ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]   # Change if you use a different Node version
+
+    steps:
+      # Checkout repository
+      - uses: actions/checkout@v3
+
+      # Setup Node.js
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Run TypeScript type check (optional but recommended)
+      - name: Type check
+        run: npx tsc --noEmit
+
+      # Run tests
+      - name: Run Jest tests
+        run: npm test
+
+      # 6️⃣ TODO: run linter if you have ESLint
+      # - name: Lint
+      #   run: npm run lint
+
