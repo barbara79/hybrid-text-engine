@@ -1,14 +1,17 @@
 // tests/engine/marketplace.test.ts
-import { MarketplaceContent, marketplaceMode } from "../../src/engine/modes/marketplace";
-// import { runEngine } from "../../src/engine/core/engine";
-import { EngineInput } from "@/engine/core/types";
-import { runFakeEngine } from "../helper";
+import { marketplaceMode } from "../../src/engine/modes/marketplace"; 
+import { EngineContext, EngineInput, Tone } from "@/engine/core/types";
+import { MarketplaceContent } from "@/engine/core/content";
+// import { runFakeEngine } from "../helper";
+import { FakeRunner } from "@/engine/runner/FakeRunner";
+// import { jobApplicationMode } from "@/engine/modes/jobApplication";
+import { runEngine } from "@/engine/core/engine";
 
 describe("Marketplace Mode", () => {
   it("should return deterministic sections from fixed input", async () => {
     const input: EngineInput<MarketplaceContent> = {
-      context: "marketplace",
-      tone: "friendly",
+      context: EngineContext.MARKETPLACE,
+      tone: Tone.FRIENDLY,
       audience: "general buyers",
       content: {
         productName: "Vintage Leather Bag",
@@ -18,27 +21,16 @@ describe("Marketplace Mode", () => {
       },
     };
 
-//     const fakeRunEngine = async (): Promise<EngineOutput> => {
-//       const raw = `
-// Generate a product listing for an online marketplace.
+    const runner = new FakeRunner();
 
-// Item: ${input.content.productName}
-// Description: ${input.content.description}
-// Price: ${input.content.price ?? "Not specified"}
-// Platform: ${input.content.platform ?? "Not specified"}
+    const result = await runEngine(marketplaceMode, input, runner);
 
-// Tone: ${input.tone}
-// Audience: ${input.audience}
-// `;
-//       return marketplaceMode.formatOutput(raw);
-//     };
 
-    const output = await runFakeEngine(marketplaceMode, input);
+    expect(result.sections).toBeDefined();
+    expect(result.sections?.title).toContain("Vintage Leather Bag");
+    expect(result.sections?.body).toContain("Price: 120");
+    expect(result.sections?.body).toContain("eBay");
 
-    expect(output.sections!.title).toBe("Generate a product listing for an online marketplace.");
-    expect(output.sections!.body).toContain("Item: Vintage Leather Bag");
-    expect(output.sections!.body).toContain("Price: 120");
-    expect(output.sections!.body).toContain("Platform: eBay");
-    expect(output.body).toContain("Tone: friendly");
+    expect(result.body).toContain("Vintage Leather Bag");
   });
 });

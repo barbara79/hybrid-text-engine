@@ -1,8 +1,11 @@
-import { EngineInput, EngineOutput } from "./types"
+import { EngineContext, EngineInput, EngineOutput } from "./types"
 
 export interface EngineMode<TContent> {
-  id: "job" | "marketplace";  
+  id: EngineContext;  
   name: string;
   buildPrompt(input: EngineInput<TContent>): string;
-  formatOutput(raw: string): EngineOutput;
+  formatOutput(
+    raw: string,
+    input: EngineInput<TContent>
+  ): EngineOutput;
 }

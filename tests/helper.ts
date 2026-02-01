@@ -1,9 +1,11 @@
 // tests/helpers/fakeEngine.ts
 
+import { assertContextMatch } from "@/engine/core/assertions";
 import { EngineMode } from "@/engine/core/mode";
-import { EngineInput, EngineOutput } from "@/engine/core/types";
+import { EngineContext, EngineInput, EngineOutput } from "@/engine/core/types";
 
 
+// TODO check if this could be removed
 /**
  * Runs a deterministic version of the engine for testing purposes.
  * Does NOT call AI — returns a fixed output formatted by the mode.
@@ -12,11 +14,14 @@ export async function runFakeEngine<TContent>(
   mode: EngineMode<TContent>,
   input: EngineInput<TContent>
 ): Promise<EngineOutput> {
+
+  assertContextMatch(mode.id, input.context);
+
   // Build a deterministic raw string based on the mode
   let raw: string;
     console.log("Mode ID:", mode.id);
   switch (mode.id) {
-    case "marketplace": 
+    case EngineContext.MARKETPLACE: 
         const { productName, description, price, platform } = input.content as any;
         raw = `
     Generate a product listing for an online marketplace.
@@ -31,7 +36,7 @@ export async function runFakeEngine<TContent>(
     `;
         break;
 
-    case "job":
+    case EngineContext.JOB:
         raw = `
     TITLE: Sample title
     DESCRIPTION:

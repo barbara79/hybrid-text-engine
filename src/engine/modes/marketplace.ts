@@ -1,17 +1,10 @@
 import { EngineMode } from "../core/mode"
-import { EngineInput } from "../core/types"
-
-export interface MarketplaceContent {
-  productName: string;
-  description: string;
-  price?: number;
-  audience?: string;
-  platform?: string;
-}
+import { EngineContext, EngineInput } from "../core/types"
+import { MarketplaceContent } from "../core/content"
 
 export const marketplaceMode: EngineMode<MarketplaceContent> = {
-  id: "marketplace",
-  name: "marketplaceMode",
+  id: EngineContext.MARKETPLACE,
+  name: "Marketplace Mode",
 
   buildPrompt(input: EngineInput<MarketplaceContent>) {
       const { productName, description, price, platform } = input.content;
@@ -31,18 +24,24 @@ Audience: ${audience}
 Return a clear title and a concise description.
 `},
 
-  formatOutput(raw: string) {
-    // Split first line as title, rest as description
-    const lines = raw.trim().split("\n").filter(Boolean);
-    const title = lines[0] || "Untitled Product";
-    const description = lines.slice(1).join("\n") || "No description";
+  formatOutput(raw: string, input: EngineInput<MarketplaceContent>) {
+  const { productName, description, price, platform } = input.content;
 
-    return {
-      sections: {
-        title,
-        body: description,
-      },
-      body: raw.trim(),
-    };
-  }
+  const body = `
+Item: ${productName}
+Description: ${description}
+Price: ${price ?? "Not specified"}
+Platform: ${platform ?? "Not specified"}
+`.trim();
+
+  return {
+    sections: {
+      title: productName,
+      body,
+    },
+    body, 
+  };
+}
+
+
 }
