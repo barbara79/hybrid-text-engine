@@ -49,5 +49,5 @@ export async function runFakeEngine<TContent>(
 }
 
   // Format it using the mode’s formatOutput method
-  return mode.formatOutput(raw);
+  return mode.formatOutput(raw, input);
 }
