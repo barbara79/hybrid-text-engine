@@ -1,10 +1,19 @@
-export type EngineContext = "job" | "marketplace"
+export const EngineContext = {
+  JOB: "job",
+  MARKETPLACE: "marketplace",
+} as const;
 
-export type Tone =
-  | "professional"
-  | "friendly"
-  | "formal"
-  | "bold"
+export type EngineContext =
+  (typeof EngineContext)[keyof typeof EngineContext];
+
+export const Tone = {
+  PROFESSIONAL: "professional",
+  FRIENDLY: "friendly",
+  FORMAL: "formal",
+  BOLD: "bold",
+} as const;
+
+export type Tone = (typeof Tone)[keyof typeof Tone];
 
 export interface EngineConstraints {
   language?: string
@@ -20,19 +29,10 @@ export interface EngineInput<TContent> {
   content: TContent
 }
 
-export interface EngineOutput {
-  title?: string
-  body: string
-  sections?: Record<string, string>
-  meta?: Record<string, string>
-}
 
-export interface JobApplicationContent {
-  role: string
-  company: string
-  experience: string
-  skills?: string[]
-  education?: string
+export interface EngineOutput {
+  body: string;
+  sections?: Record<string, string>;
 }
 
 

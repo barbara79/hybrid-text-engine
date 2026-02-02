@@ -1,38 +1,65 @@
 import { EngineMode } from "../core/mode"
-import { EngineInput, EngineOutput, JobApplicationContent } from "../core/types"
+import { EngineContext, EngineInput, EngineOutput } from "../core/types"
+import { JobApplicationContent } from "../core/content"
 
 
 
 export const jobApplicationMode: EngineMode<JobApplicationContent> = {
-  name: "jobApplication",
+  id: EngineContext.JOB,
+  name: "Job Application Mode",
 
   buildPrompt(input: EngineInput<JobApplicationContent>) {
     const { role, company, experience, skills, education } = input.content
-    const tone = input.tone ?? "professional"
+    
 
     return `
-Generate two professional documents for a job application:
+Write a professional cover letter for the following job application.
 
-1. Cover Letter: personalized for role "${role}" at "${company}". Use ${tone} tone.
-2. CV / Resume: summarize candidate experience, skills, and education.
-
-Candidate info:
+Role: ${role}
+Company: ${company}
 Experience: ${experience}
 Skills: ${skills?.join(", ") ?? "Not specified"}
 Education: ${education ?? "Not specified"}
 
-Return both sections clearly labeled.
-`.trim()
+Tone: ${input.tone}
+Audience: ${input.audience}
+`;
   },
 
-  formatOutput(raw: string): EngineOutput {
-    // For now, placeholder logic — later replace with AI output parsing
-    return {
-      sections: {
-        coverLetter: `Dear Hiring Manager,\n\n${raw}\n\nBest regards,\nCandidate`,
-        resume: `Candidate Resume:\n\n${raw}`,
-      },
-      body: raw, // fallback 
-    }
-  },
+  formatOutput(raw: string, input: EngineInput<JobApplicationContent>) {
+    const { role, company, experience, skills, education } = input.content;
+
+    const coverLetter = `
+Dear Hiring Manager,
+
+I am applying for the ${role} position at ${company}.
+
+${experience}
+
+${skills ? `My skills include: ${skills.join(", ")}.` : ""}
+
+Kind regards,
+Candidate
+`.trim();
+
+  const resume = `
+Role: ${role}
+Company: ${company}
+
+Experience:
+${experience}
+
+${skills ? `Skills: ${skills.join(", ")}` : ""}
+${education ? `Education: ${education}` : ""}
+`.trim();
+
+  return {
+    sections: {
+      coverLetter,
+      resume,
+    },
+    body: `${coverLetter}\n\n---\n\n${resume}`,
+  };
+}
+
 }

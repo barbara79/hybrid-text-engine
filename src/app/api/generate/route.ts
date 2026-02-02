@@ -2,21 +2,37 @@ import { NextRequest, NextResponse } from "next/server"
 import { runEngine } from "@/engine/core/engine"
 import { marketplaceMode } from "@/engine/modes/marketplace"
 import { jobApplicationMode } from "@/engine/modes/jobApplication"
+import { FakeRunner } from "@/engine/runner/FakeRunner"
+import { EngineRequest } from "@/engine/core/request"
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json()
+    const runner = new FakeRunner();
+    const body: EngineRequest = await req.json();
 
-    const mode =
-      body.mode === "jobApplication" ? jobApplicationMode : marketplaceMode
+    switch (body.mode) {
+      case "jobApplication": {
+        const result = await runEngine(jobApplicationMode, body, runner);
+        return NextResponse.json(result);
+      }
 
-    const result = await runEngine(mode, body)
+      case "marketplace": {
+        const result = await runEngine(marketplaceMode, body, runner);
+        return NextResponse.json(result);
+      }
 
-    return NextResponse.json(result)
-  } catch {
+      default:
+        return NextResponse.json(
+          { error: "Invalid mode" },
+          { status: 400 }
+        );
+    }
+  } catch (err) {
+    console.error(err);
     return NextResponse.json(
       { error: "Failed to generate content" },
       { status: 500 }
-    )
+    );
   }
 }
+
