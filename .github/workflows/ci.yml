@@ -3,7 +3,7 @@ name: Node.js CI
 on:
   workflow_dispatch:        # manual trigger
   push:
-    branches: [ main, feature/* ]
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -13,31 +13,16 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x]
-
+        node-version: [20]
     steps:
-      # Checkout repo
       - uses: actions/checkout@v3
-
-      # Setup Node.js
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-
-      # Install dependencies
       - name: Install dependencies
         run: npm install
-
-      # TypeScript type check
       - name: Type check
         run: npx tsc --noEmit
-
-      # Run unit tests (engine + API)
       - name: Run Jest tests
         run: npm test
-
-      # Optional: ESLint linting
-      # - name: Lint
-      #   run: npm run lint
-
