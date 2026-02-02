@@ -7,21 +7,21 @@ import { EngineRequest } from "@/engine/core/request"
 
 export async function POST(req: NextRequest) {
   try {
-    // TODO: Use FakeRunner for demonstration; later replace with AI runner as needed
     const runner = new FakeRunner();
     const body: EngineRequest = await req.json();
 
     switch (body.mode) {
-      case "jobApplication":
-        // TS knows body.content is JobApplicationContent here
-        return NextResponse.json(await runEngine(jobApplicationMode, body, runner));
+      case "jobApplication": {
+        const result = await runEngine(jobApplicationMode, body, runner);
+        return NextResponse.json(result);
+      }
 
-      case "marketplace":
-        // TS knows body.content is MarketplaceContent here
-        return NextResponse.json(await runEngine(marketplaceMode, body, runner));
+      case "marketplace": {
+        const result = await runEngine(marketplaceMode, body, runner);
+        return NextResponse.json(result);
+      }
 
       default:
-        // Should never happen, but safe fallback
         return NextResponse.json(
           { error: "Invalid mode" },
           { status: 400 }
@@ -35,3 +35,4 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
