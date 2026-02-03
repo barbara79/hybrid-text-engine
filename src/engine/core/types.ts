@@ -32,7 +32,11 @@ export interface EngineInput<TContent> {
 
 export interface EngineOutput {
   body: string;
-  sections?: Record<string, string>;
+  sections: Record<string, string>
+  meta?: {
+    mode: EngineContext
+    tone?: Tone
+  }
 }
 
 

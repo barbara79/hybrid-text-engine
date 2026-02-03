@@ -2,12 +2,17 @@ import { NextRequest, NextResponse } from "next/server"
 import { runEngine } from "@/engine/core/engine"
 import { marketplaceMode } from "@/engine/modes/marketplace"
 import { jobApplicationMode } from "@/engine/modes/jobApplication"
-import { FakeRunner } from "@/engine/runner/FakeRunner"
+
 import { EngineRequest } from "@/engine/core/request"
+import { OpenAIRunner } from "@/engine/runner/openaiRunner"
+import { FakeRunner } from "@/engine/runner/fakeRunner"
 
 export async function POST(req: NextRequest) {
   try {
-    const runner = new FakeRunner();
+    const runner = 
+      process.env.NODE_ENV === "test"
+        ? new FakeRunner()
+        : new OpenAIRunner()
     const body: EngineRequest = await req.json();
 
     switch (body.mode) {

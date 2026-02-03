@@ -1,7 +1,7 @@
 import { jobApplicationMode } from "../../src/engine/modes/jobApplication"
 import { runEngine } from "../../src/engine/core/engine"
 import { EngineContext, EngineInput, Tone } from "../../src/engine/core/types"
-import { FakeRunner } from "@/engine/runner/FakeRunner"
+import { FakeRunner } from "@/engine/runner/fakeRunner"
 import { JobApplicationContent } from "@/engine/core/content"
 
 describe("JobApplicationMode", () => {
@@ -30,5 +30,9 @@ describe("JobApplicationMode", () => {
     expect(result.sections?.resume).toContain("Company: Awesome Startup");
     expect(result.sections?.resume).toContain("Skills: React, TypeScript");
     expect(result.sections?.resume).toContain("Education: B.Sc. Computer Science");
+
+  // Snapshot test used to lock the full output contract.
+  // This helps detect accidental breaking changes when extending the engine.
+    expect(result).toMatchSnapshot();
   })
 })

@@ -1,6 +1,6 @@
 import { runEngine } from "@/engine/core/engine"
 import { marketplaceMode } from "@/engine/modes/marketplace"
-import { FakeRunner } from "@/engine/runner/FakeRunner";
+import { FakeRunner } from "@/engine/runner/fakeRunner";
 
 export default async function Home() {
   const runner = new FakeRunner();
