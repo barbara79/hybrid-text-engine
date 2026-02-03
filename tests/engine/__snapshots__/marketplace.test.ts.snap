@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Marketplace Mode should return deterministic sections from fixed input 1`] = `
+{
+  "body": "Item: Vintage Leather Bag
+Description: Genuine leather, slightly used, excellent condition
+Price: 120
+Platform: eBay",
+  "sections": {
+    "body": "Item: Vintage Leather Bag
+Description: Genuine leather, slightly used, excellent condition
+Price: 120
+Platform: eBay",
+    "title": "Vintage Leather Bag",
+  },
+}
+`;

@@ -1,6 +1,6 @@
 import { POST } from "../../src/app/api/generate/route";
 import { NextRequest } from "next/server";
-import { FakeRunner } from "@/engine/runner/FakeRunner"
+import { FakeRunner } from "@/engine/runner/fakeRunner"
 
 
 // Helper to create a mock NextRequest with JSON body

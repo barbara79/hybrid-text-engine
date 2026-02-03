@@ -1,6 +1,6 @@
 import { EngineInput, EngineOutput } from "./types"
 import { EngineMode } from "./mode"
-import { EngineRunner } from "../runner/EngineRunner";
+import { EngineRunner } from "../runner/engineRunner";
 import { assert } from "console";
 import { assertContextMatch } from "./assertions";
 

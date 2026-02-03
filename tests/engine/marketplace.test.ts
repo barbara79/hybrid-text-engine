@@ -2,9 +2,7 @@
 import { marketplaceMode } from "../../src/engine/modes/marketplace"; 
 import { EngineContext, EngineInput, Tone } from "@/engine/core/types";
 import { MarketplaceContent } from "@/engine/core/content";
-// import { runFakeEngine } from "../helper";
-import { FakeRunner } from "@/engine/runner/FakeRunner";
-// import { jobApplicationMode } from "@/engine/modes/jobApplication";
+import { FakeRunner } from "@/engine/runner/fakeRunner";
 import { runEngine } from "@/engine/core/engine";
 
 describe("Marketplace Mode", () => {
@@ -30,7 +28,10 @@ describe("Marketplace Mode", () => {
     expect(result.sections?.title).toContain("Vintage Leather Bag");
     expect(result.sections?.body).toContain("Price: 120");
     expect(result.sections?.body).toContain("eBay");
-
     expect(result.body).toContain("Vintage Leather Bag");
+
+  // Snapshot test used to lock the full output contract.
+  // This helps detect accidental breaking changes when extending the engine.
+    expect(result).toMatchSnapshot();
   });
 });

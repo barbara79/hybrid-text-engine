@@ -1,4 +1,4 @@
-import { EngineRunner } from "./EngineRunner";
+import { EngineRunner } from "./engineRunner";
 
 export class FakeRunner implements EngineRunner {
   async run(prompt: string): Promise<string> {
