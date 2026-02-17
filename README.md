@@ -1,59 +1,64 @@
 # Hybrid Text Engine
 
-Modular text-generation engine built with Next.js and TypeScript.
+A modular, high-performance AI orchestration engine built with **Next.js**, **TypeScript**, and **Clean Architecture**. This project demonstrates a scalable approach to integrating LLMs (Large Language Models) into web applications using a self-correcting **Critic Pattern**. 
 
 ## Project Overview
 
 This project implements a small, extensible text-generation engine designed to support multiple content domains (e.g., job applications, marketplaces). 
 Future development will include **AI-powered content generation** via pluggable providers, enabling smarter and more dynamic outputs.
 
-## Project Status
+## 🌟 Key Innovations
 
-Work in progress. Core architecture and modular EngineMode system are in place. 
-Planned improvements include:
+* **Self-Correcting Critic Loop**: Unlike basic wrappers, this engine forces the AI to critique its own work. If a generation score falls below a threshold (e.g., 80/100), the engine automatically triggers a second "refinement" pass to improve quality.
+* **Domain-Driven Engine Modes**: Uses a Registry Pattern to handle distinct content domains (Job Applications, Marketplaces, and ATS Comparisons) while maintaining total type safety.
+* **Discriminated Union Architecture**: Every input and output is strictly typed, preventing runtime errors and ensuring that the API boundary always returns predictable, structured data.
+* **Provider Agnostic**: Features a pluggable `EngineRunner` interface. Easily switch between OpenAI, Anthropic, or local LLMs without touching the core business logic.
 
-- AI provider integration for automated content generation
-- Additional content modes for new domains
-- Enhanced input validation and output normalization
+---
 
+## 🏗️ Technical Architecture
 
-## Features
-- Engine-based architecture
-- Multiple content modes
-- Server-side API boundary
-- Extensible for AI providers
+The engine is built on a "Decoupled Orchestration" model:
 
-## Tech Stack
-- Next.js (App Router)
-- TypeScript
-- Node.js
+1.  **Registry & Routing**: A centralized `MODE_REGISTRY` maps incoming requests to specialized `EngineMode` handlers.
+2.  **The Prompt Builder**: Each mode transforms structured data into optimized, high-context JSON-based instructions for the LLM.
+3.  **Structured Formatting**: AI responses are parsed and normalized into a consistent `EngineOutput` format, including a dedicated `analysis` object for transparency.
 
-## Architecture Overview
+---
 
-This project implements a small, extensible text-generation engine designed
-to support multiple content domains (e.g. job applications, marketplaces).
+## 📊 Implemented Modes
 
-### Core Concepts
+| Mode | Functionality | "Unique Sauce" |
+| :--- | :--- | :--- |
+| **Job Application** | Cover Letters & Resume Summaries | Self-critique of tone and skill alignment. |
+| **Marketplace** | Product titles, descriptions & SEO tags | Automatic extraction of selling points and SEO optimization. |
+| **Comparison** | Job Description vs. Resume analysis | Semantic gap analysis with ✅/❌ match reporting. |
 
-- **EngineMode**
-  Each domain is implemented as an `EngineMode` responsible for:
-  - building a prompt from structured input
-  - formatting the raw output into a domain-specific result
+---
 
-- **Engine Core**
-  The core engine is mode-agnostic and only coordinates:
-  - input validation
-  - mode execution
-  - output normalization
+## 🛠️ Tech Stack
 
-- **Type Safety**
-  All engine inputs and outputs are fully typed using TypeScript generics,
-  ensuring compile-time safety when adding new modes.
+- **Framework**: [Next.js](https://nextjs.org/) (App Router & Route Handlers)
+- **Language**: [TypeScript](https://www.typescriptlang.org/) (Strict Mode)
+- **AI Integration**: OpenAI SDK (GPT-4o / GPT-3.5-Turbo)
+- **Testing**: [Jest](https://jestjs.io/) / Vitest for deterministic logic and API boundary testing.
 
-### Current Modes
+---
 
-**Job Application Mode** – Generates tailored cover letters and structured resume/CV sections.  
-Future modes will leverage **AI models** to provide richer, context-aware content for other domains.
+## 🚦 Getting Started
+
+### 1. Installation
+```bash
+npm install
+```
+
+## Running Tests
+The engine includes a robust test suite covering logic, parsing, and the critic loop.
+
+```bash
+npm test
+```
+
 
 ## Author
 

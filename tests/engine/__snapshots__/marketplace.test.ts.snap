@@ -2,15 +2,21 @@
 
 exports[`Marketplace Mode should return deterministic sections from fixed input 1`] = `
 {
-  "body": "Item: Vintage Leather Bag
-Description: Genuine leather, slightly used, excellent condition
-Price: 120
-Platform: eBay",
+  "analysis": {
+    "critique": "Good description.",
+    "score": 85,
+    "suggestions": [
+      "Add more keywords.",
+    ],
+  },
+  "body": "This Vintage Leather Bag is a great item for sale. Price: 120 Platform: eBay",
+  "meta": {
+    "mode": "marketplace",
+    "tone": "friendly",
+  },
   "sections": {
-    "body": "Item: Vintage Leather Bag
-Description: Genuine leather, slightly used, excellent condition
-Price: 120
-Platform: eBay",
+    "description": "This Vintage Leather Bag is a great item for sale. Price: 120 Platform: eBay",
+    "seoTags": "test, demo",
     "title": "Vintage Leather Bag",
   },
 }
