@@ -13,11 +13,9 @@
     "jsx": "react-jsx",
     "isolatedModules": true,
     "ignoreDeprecations": "5.0",
-    "baseUrl": "src",
+    "baseUrl": ".", 
     "paths": {
-      "@/*": [
-        "*"
-      ]
+      "@/*": ["./src/*"] 
     },
     "plugins": [
       {
