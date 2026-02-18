@@ -1,20 +1,33 @@
 import { EngineInput, EngineOutput } from "./types"
 import { EngineMode } from "./mode"
 import { EngineRunner } from "../runner/engineRunner";
-import { assert } from "console";
 import { assertContextMatch } from "./assertions";
 
 export async function runEngine<TContent>(
-  mode: EngineMode<TContent>,
+mode: EngineMode<TContent>,
   input: EngineInput<TContent>,
   runner: EngineRunner
 ): Promise<EngineOutput> {
-
   assertContextMatch(mode.id, input.context);
 
-  const prompt = mode.buildPrompt(input);
+  const firstPrompt = mode.buildPrompt(input);
+  const firstRaw = await runner.run(firstPrompt);
+  let result = mode.formatOutput(firstRaw, input);
 
-  const raw = await runner.run(prompt);
+if (result.analysis && result.analysis.score < 80) {
+    const refinementPrompt = `
+      Your previous attempt received a quality score of ${result.analysis.score}/100.
+      Critique: ${result.analysis.critique}
+      
+      Please rewrite the content to address these specific suggestions:
+      ${result.analysis.suggestions.join(", ")}
+      
+      Return the updated version in the same JSON format.
+    `;
 
-  return mode.formatOutput(raw, input);
+    const refinedRaw = await runner.run(refinementPrompt);
+    result = mode.formatOutput(refinedRaw, input);
+  }
+
+  return result;
 }

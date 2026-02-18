@@ -1,7 +1,8 @@
 import { marketplaceMode } from "../../src/engine/modes/marketplace"; 
 import { EngineContext, EngineInput, Tone } from "@/engine/core/types";
 import { MarketplaceContent } from "@/engine/core/content";
-import { runFakeEngine } from "../helper";
+import { FakeRunner } from "@/engine/runner/fakeRunner";
+import { runEngine } from "@/engine/core/engine";
 
 describe("Engine Context Validation", () => {
 it("throws when mode and input context do not match", async () => {
@@ -13,10 +14,12 @@ it("throws when mode and input context do not match", async () => {
       productName: "Bag",
       description: "Leather",
     },
-  };
+  } as any;
+
+  const runner = new FakeRunner();
 
   await expect(
-    runFakeEngine(marketplaceMode, input)
+    runEngine(marketplaceMode, input, runner)
   ).rejects.toThrow("Engine context mismatch");
 });
 });

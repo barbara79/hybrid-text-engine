@@ -1,6 +1,7 @@
 export const EngineContext = {
   JOB: "job",
   MARKETPLACE: "marketplace",
+  COMPARISON: "comparison",
 } as const;
 
 export type EngineContext =
@@ -32,12 +33,22 @@ export interface EngineInput<TContent> {
 
 export interface EngineOutput {
   body: string;
-  sections: Record<string, string>
+  sections: Record<string, string>;
+  analysis?: {
+      score: number;
+      critique: string;
+      suggestions: string[];
+  };
   meta?: {
-    mode: EngineContext
-    tone?: Tone
-  }
+    mode: EngineContext;
+    tone?: Tone;
+  };
 }
 
+export interface ComparisonContent {
+  jobDescription: string;
+  userResume: string;
+}
 
+export type EngineModeId = "jobApplication" | "marketplace" | "comparison";
 

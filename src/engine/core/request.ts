@@ -1,5 +1,5 @@
 import { JobApplicationContent, MarketplaceContent } from "./content";
-import { EngineInput, Tone } from "./types";
+import { ComparisonContent, EngineInput, Tone } from "./types";
 
 export type JobApplicationRequest = {
   mode: "jobApplication"
@@ -19,5 +19,6 @@ export type MarketplaceRequest = {
 
 export type EngineRequest =
   | (EngineInput<JobApplicationContent> & { mode: "jobApplication" })
-  | (EngineInput<MarketplaceContent> & { mode: "marketplace" });
+  | (EngineInput<MarketplaceContent> & { mode: "marketplace" })
+  | (EngineInput<ComparisonContent> & { mode: "comparison" });
 

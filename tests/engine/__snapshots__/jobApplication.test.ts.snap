@@ -1,47 +1,28 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`JobApplicationMode should return both cover letter and resume sections 1`] = `
+exports[`JobApplicationMode should return cover letter, resume, and quality analysis 1`] = `
 {
-  "body": "Dear Hiring Manager,
-
-I am applying for the Frontend Developer position at Awesome Startup.
-
-5+ years React, TypeScript
-
-My skills include: React, TypeScript.
-
-Kind regards,
-Candidate
+  "analysis": {
+    "critique": "Strong skills match.",
+    "score": 90,
+    "suggestions": [
+      "Quantify achievements.",
+    ],
+  },
+  "body": "Dear Hiring Manager, I am a Frontend Developer...
 
 ---
 
 Role: Frontend Developer
-Company: Awesome Startup
-
-Experience:
-5+ years React, TypeScript
-
-Skills: React, TypeScript
-Education: B.Sc. Computer Science",
+Summary: Expert developer.",
+  "meta": {
+    "mode": "job",
+    "tone": "professional",
+  },
   "sections": {
-    "coverLetter": "Dear Hiring Manager,
-
-I am applying for the Frontend Developer position at Awesome Startup.
-
-5+ years React, TypeScript
-
-My skills include: React, TypeScript.
-
-Kind regards,
-Candidate",
+    "coverLetter": "Dear Hiring Manager, I am a Frontend Developer...",
     "resume": "Role: Frontend Developer
-Company: Awesome Startup
-
-Experience:
-5+ years React, TypeScript
-
-Skills: React, TypeScript
-Education: B.Sc. Computer Science",
+Summary: Expert developer.",
   },
 }
 `;

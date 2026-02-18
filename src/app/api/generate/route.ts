@@ -1,43 +1,35 @@
 import { NextRequest, NextResponse } from "next/server"
 import { runEngine } from "@/engine/core/engine"
-import { marketplaceMode } from "@/engine/modes/marketplace"
-import { jobApplicationMode } from "@/engine/modes/jobApplication"
-
 import { EngineRequest } from "@/engine/core/request"
-import { OpenAIRunner } from "@/engine/runner/openaiRunner"
+import { OpenAIRunner } from "../../../engine/runner/openAIRunner";
 import { FakeRunner } from "@/engine/runner/fakeRunner"
+import { MODE_REGISTRY } from "@/engine/core/registry"
 
 export async function POST(req: NextRequest) {
   try {
-    const runner = 
-      process.env.NODE_ENV === "test"
-        ? new FakeRunner()
-        : new OpenAIRunner()
+
+
     const body: EngineRequest = await req.json();
 
-    switch (body.mode) {
-      case "jobApplication": {
-        const result = await runEngine(jobApplicationMode, body, runner);
-        return NextResponse.json(result);
-      }
-
-      case "marketplace": {
-        const result = await runEngine(marketplaceMode, body, runner);
-        return NextResponse.json(result);
-      }
-
-      default:
-        return NextResponse.json(
-          { error: "Invalid mode" },
-          { status: 400 }
-        );
+    const mode = MODE_REGISTRY[body.mode];
+    if (!mode) {
+      return NextResponse.json({ error: "Invalid mode" }, { status: 400 });
     }
+
+    const runner = 
+      process.env.USE_OPENAI === "true"
+      ? new OpenAIRunner({apiKey: process.env.OPENAI_API_KEY})
+      : new FakeRunner();
+
+    const result = await runEngine(mode, body, runner);
+
+    return NextResponse.json(result);
   } catch (err) {
-    console.error(err);
+    console.error("API Error:", err);
     return NextResponse.json(
-      { error: "Failed to generate content" },
+      { error: err instanceof Error ? err.message : "Internal Server Error" },
       { status: 500 }
-    );
+    )
   }
 }
 

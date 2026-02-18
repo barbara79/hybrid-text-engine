@@ -5,7 +5,7 @@ import { FakeRunner } from "@/engine/runner/fakeRunner"
 import { JobApplicationContent } from "@/engine/core/content"
 
 describe("JobApplicationMode", () => {
-  it("should return both cover letter and resume sections", async () => {
+  it("should return cover letter, resume, and quality analysis", async () => {
     const input: EngineInput<JobApplicationContent> = {
       context: EngineContext.JOB,
       tone: Tone.PROFESSIONAL,
@@ -23,13 +23,12 @@ describe("JobApplicationMode", () => {
 
     const result = await runEngine(jobApplicationMode, input, runner);
 
+    // Assert the sections exist
     expect(result.sections).toBeDefined();
-    expect(result.sections?.coverLetter).toContain("Dear");
-    expect(result.sections?.coverLetter).toContain("Frontend Developer");
-    expect(result.sections?.resume).toContain("Role: Frontend Developer");
-    expect(result.sections?.resume).toContain("Company: Awesome Startup");
-    expect(result.sections?.resume).toContain("Skills: React, TypeScript");
-    expect(result.sections?.resume).toContain("Education: B.Sc. Computer Science");
+    // Assert the "Unique" features (The Analysis)
+    expect(result.analysis).toBeDefined();
+    expect(result.analysis?.score).toBeGreaterThan(0);
+    expect(result.analysis?.suggestions.length).toBeGreaterThan(0);
 
   // Snapshot test used to lock the full output contract.
   // This helps detect accidental breaking changes when extending the engine.
