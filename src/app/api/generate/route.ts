@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { runEngine } from "@/engine/core/engine"
 import { EngineRequest } from "@/engine/core/request"
-import { OpenAIRunner } from "@/engine/runner/openAIRunner";
+import { OpenAIRunner } from "../../../engine/runner/openAIRunner";
 import { FakeRunner } from "@/engine/runner/fakeRunner"
 import { MODE_REGISTRY } from "@/engine/core/registry"
 
