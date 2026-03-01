@@ -25,7 +25,7 @@ jest.mock("next/server", () => ({
 describe("POST /api/generate", () => {
 
   beforeAll(() => {
-    process.env.USE_OPENAI = "false"; 
+    process.env.AI = "false"; 
   });
 
   

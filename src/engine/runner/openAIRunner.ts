@@ -1,6 +1,5 @@
 import fetch from "node-fetch";
-import { EngineRunner } from "./engineRunner";
-import { OpenAIResponse, OpenAIError } from "./types";
+import { OpenAIResponse, OpenAIError, EngineRunner } from "./types";
 /**
  * OpenAIRunner: stub for connecting the engine to OpenAI
  * Currently does a simple fetch, with timeout & basic retry logic

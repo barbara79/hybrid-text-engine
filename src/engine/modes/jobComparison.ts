@@ -1,7 +1,8 @@
-import { EngineInput, EngineOutput, EngineContext, ComparisonContent } from "../core/types";
+import { EngineInput, EngineOutput, EngineContext } from "../core/types";
 import { EngineMode } from "../core/mode";
+import { ComparisonContent } from "../core/content"
 
-export const comparisonMode: EngineMode<ComparisonContent> = {
+export const jobComparisonMode: EngineMode<ComparisonContent> = {
   id: EngineContext.COMPARISON,
   name: "Match Analysis",
 
