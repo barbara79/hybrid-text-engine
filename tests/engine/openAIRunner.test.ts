@@ -1,6 +1,6 @@
 import { MarketplaceContent } from "@/engine/core/content";
 import { runEngine } from "@/engine/core/engine";
-import { EngineContext, EngineInput, Tone } from "@/engine/core/types";
+import { Audience, EngineContext, EngineInput, Tone } from "@/engine/core/types";
 import { marketplaceMode } from "@/engine/modes/marketplace";
 import { OpenAIRunner } from "@/engine/runner/openAIRunner";
 
@@ -34,7 +34,7 @@ describe("OpenAIRunner Integration (mocked fetch)", () => {
         const input: EngineInput<MarketplaceContent> = {
             context: EngineContext.MARKETPLACE,
             tone: Tone.FRIENDLY,
-            audience: "online buyers",
+            audience: Audience.BUYERS,
             content: {
                 productName: "Vintage Denim Jacket",
                 description: "Classic denim jacket, very good condition",

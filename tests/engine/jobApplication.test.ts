@@ -1,6 +1,6 @@
 import { jobApplicationMode } from "../../src/engine/modes/jobApplication"
 import { runEngine } from "../../src/engine/core/engine"
-import { EngineContext, EngineInput, Tone } from "../../src/engine/core/types"
+import { Audience, EngineContext, EngineInput, Tone } from "../../src/engine/core/types"
 import { FakeRunner } from "@/engine/runner/fakeRunner"
 import { JobApplicationContent } from "@/engine/core/content"
 
@@ -9,7 +9,7 @@ describe("JobApplicationMode", () => {
     const input: EngineInput<JobApplicationContent> = {
       context: EngineContext.JOB,
       tone: Tone.PROFESSIONAL,
-      audience: "HR",
+      audience: Audience.RECRUITERS,
       content: {
         role: "Frontend Developer",
         company: "Awesome Startup",

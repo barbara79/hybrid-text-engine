@@ -1,6 +1,6 @@
 // tests/engine/marketplace.test.ts
 import { marketplaceMode } from "../../src/engine/modes/marketplace"; 
-import { EngineContext, EngineInput, Tone } from "@/engine/core/types";
+import { Audience, EngineContext, EngineInput, Tone } from "@/engine/core/types";
 import { MarketplaceContent } from "@/engine/core/content";
 import { FakeRunner } from "@/engine/runner/fakeRunner";
 import { runEngine } from "@/engine/core/engine";
@@ -10,7 +10,7 @@ describe("Marketplace Mode", () => {
     const input: EngineInput<MarketplaceContent> = {
       context: EngineContext.MARKETPLACE,
       tone: Tone.FRIENDLY,
-      audience: "general buyers",
+      audience: Audience.BUYERS,
       content: {
         productName: "Vintage Leather Bag",
         description: "Genuine leather, slightly used, excellent condition",
