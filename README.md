@@ -32,7 +32,7 @@ The engine is built on a "Decoupled Orchestration" model:
 | :--- | :--- | :--- |
 | **Job Application** | Cover Letters & Resume Summaries | Self-critique of tone and skill alignment. |
 | **Marketplace** | Product titles, descriptions & SEO tags | Automatic extraction of selling points and SEO optimization. |
-| **Comparison** | Job Description vs. Resume analysis | Semantic gap analysis with ✅/❌ match reporting. |
+| **Job Comparison** | Job Description vs. Resume analysis | Semantic gap analysis with ✅/❌ match reporting. |
 
 ---
 

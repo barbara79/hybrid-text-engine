@@ -13,3 +13,8 @@ export interface MarketplaceContent {
   audience?: string;
   platform?: string;
 }
+
+export interface ComparisonContent {
+  jobDescription: string;
+  userResume: string;
+}

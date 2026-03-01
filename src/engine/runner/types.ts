@@ -1,3 +1,6 @@
+export interface EngineRunner {
+  run(prompt: string): Promise<string>;
+}
 
 export interface OpenAIResponse {
   choices: {
