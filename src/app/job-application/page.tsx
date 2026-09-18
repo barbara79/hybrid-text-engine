@@ -22,8 +22,10 @@ export default function JobApplicationPage() {
         tone: Tone.PROFESSIONAL, 
         audience: Audience.RECRUITERS,
         content: {
-          resume: formData.resume,
-          jd: formData.jd
+          experience: formData.resume,
+          skills: [formData.jd],
+          role: "Auto-detect",
+          company: "Auto-detect"
         }
       }),
     });
@@ -63,11 +65,17 @@ export default function JobApplicationPage() {
 
         <div className="lg:col-span-3">
           {result ? (
-            <div className="bg-white p-8 rounded-3xl border shadow-sm min-h-[500px]">
-              <h2 className="font-bold text-slate-400 uppercase text-xs mb-6">Tailored Cover Letter</h2>
-              <div className="text-slate-800 whitespace-pre-wrap leading-loose">
-                {result.body}
+            <div className="bg-white p-8 rounded-3xl border shadow-sm">
+              {/* Show the detected info */}
+              <div className="mb-4">
+                <h3 className="text-lg font-bold text-blue-600">
+                  Application for {result.analysis?.detectedRole || "Selected Position"} at {result.analysis?.detectedCompany || "Target Company"}
+                </h3>
               </div>
+              
+              <div className="text-slate-800 whitespace-pre-wrap">
+                {result.body}
+              </div>  
             </div>
           ) : (
             <div className="h-full border-2 border-dashed border-slate-200 rounded-3xl flex items-center justify-center text-slate-300">

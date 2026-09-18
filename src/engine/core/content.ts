@@ -1,6 +1,7 @@
 export interface JobApplicationContent {
   role: string
   company: string
+  jobDescription: string 
   experience: string
   skills?: string[]
   education?: string

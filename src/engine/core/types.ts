@@ -63,6 +63,8 @@ export interface EngineOutput {
       score: number;
       critique: string;
       suggestions: string[];
+      detectedRole?: string; 
+      detectedCompany?: string; 
   };
   meta?: {
     mode: EngineContext;

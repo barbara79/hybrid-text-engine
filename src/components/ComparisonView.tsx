@@ -1,22 +1,29 @@
 
-import { CheckCircle, AlertCircle, TrendingUp } from "lucide-react";
+import {  AlertCircle, TrendingUp } from "lucide-react";
 
 interface ComparisonProps {
   result: {
     body: string;
+    sections: {
+      score: string;
+      matches: string;
+      gaps: string;
+      advice: string;
+    };
     analysis: {
       score: number;
-      feedback: string[];
+      critique: string;
+      suggestions: string[];
     };
   };
 }
 
 export default function ComparisonView({ result }: ComparisonProps) {
-  const { score, feedback } = result.analysis;
+  const { score, critique, suggestions  } = result.analysis;
 
   return (
     <div className="space-y-6 animate-in slide-in-from-bottom-4 duration-500">
-      {/* Hero Score Card */}
+      {/* Hero Score Card — unchanged, this part is fine */}
       <div className="bg-gradient-to-br from-indigo-50 to-white border border-indigo-100 p-6 rounded-2xl shadow-sm">
         <div className="flex justify-between items-center">
           <div>
@@ -36,51 +43,20 @@ export default function ComparisonView({ result }: ComparisonProps) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* The Response */}
         <div className="bg-white border rounded-xl p-5">
           <h4 className="flex items-center gap-2 text-sm font-bold text-gray-500 mb-3 uppercase">
-            <TrendingUp size={16} /> Strategy & Cover Letter
+            <TrendingUp size={16} /> Summary
           </h4>
-          <div className="text-gray-700 text-sm leading-relaxed whitespace-pre-wrap">
-            {result.body}
-          </div>
+          <p className="text-gray-700 text-sm leading-relaxed whitespace-pre-wrap">{critique}</p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
-        {/* Left Column: The Feedback (Gap Analysis) */}
-        <div className="md:col-span-1 space-y-4">
-            <div className="bg-amber-50 border border-amber-200 p-4 rounded-xl">
-            <h4 className="text-amber-800 font-bold text-sm mb-2 flex items-center gap-2">
-                ⚠️ Missing from Resume
-            </h4>
-            <ul className="text-sm text-amber-700 space-y-2">
-                {result.analysis.feedback.map((f, i) => (
-                <li key={i} className="flex gap-2"><span>•</span> {f}</li>
-                ))}
-            </ul>
-            </div>
-        </div>
-
-        {/* Right Column: The Drafted Text */}
-        <div className="md:col-span-2 bg-white border rounded-xl p-6 shadow-sm">
-            <h4 className="text-slate-400 text-xs font-bold uppercase mb-4 tracking-widest">Optimized Application Pitch</h4>
-            <div className="prose prose-slate max-w-none text-slate-800">
-            {result.body}
-            </div>
-        </div>
-        </div>
-
-        {/* The Critic Gaps */}
-        <div className="bg-slate-50 border rounded-xl p-5">
-          <h4 className="flex items-center gap-2 text-sm font-bold text-gray-500 mb-3 uppercase">
-            <AlertCircle size={16} /> Improvement Gaps
+        <div className="bg-amber-50 border border-amber-200 p-4 rounded-xl">
+          <h4 className="text-amber-800 font-bold text-sm mb-2 flex items-center gap-2">
+            <AlertCircle size={16} /> Gaps & Suggestions
           </h4>
-          <ul className="space-y-3">
-            {feedback.map((item, i) => (
-              <li key={i} className="flex gap-2 text-sm text-slate-700">
-                <span className="text-indigo-500 mt-1">●</span>
-                {item}
-              </li>
+          <ul className="text-sm text-amber-700 space-y-2">
+            {suggestions.map((s, i) => (
+              <li key={i} className="flex gap-2"><span>•</span> {s}</li>
             ))}
           </ul>
         </div>

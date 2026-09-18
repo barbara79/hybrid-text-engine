@@ -8,4 +8,5 @@ export interface EngineMode<TContent> {
     raw: string,
     input: EngineInput<TContent>
   ): EngineOutput;
+  processParsedData?(parsed: any, input: EngineInput<TContent>): EngineOutput; 
 }

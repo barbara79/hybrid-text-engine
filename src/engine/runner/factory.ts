@@ -7,6 +7,7 @@ import { Provider } from "../core/types";
 import { GroqRunner } from "./groqRunner";
 
 export function getRunner(provider: Provider): EngineRunner {
+
   const keys = {
     openai: process.env.OPENAI_API_KEY,
     gemini: process.env.GEMINI_API_KEY,
@@ -15,6 +16,7 @@ export function getRunner(provider: Provider): EngineRunner {
 
   const isPlaceholder = (key?: string) => 
     !key || key.includes("_your_") || key.includes("sk_****");
+  
 
  switch (provider) {
     case Provider.OPENAI:
@@ -24,7 +26,6 @@ export function getRunner(provider: Provider): EngineRunner {
       return isPlaceholder(keys.gemini) ? new FakeRunner() : new GeminiRunner({ apiKey: keys.gemini! });
 
     case Provider.GROQ:
-      // When you build RitaRunner, just swap this out!
       return isPlaceholder(keys.groq) ? new FakeRunner() : new GroqRunner({ apiKey: keys.groq! }); 
 
     default:

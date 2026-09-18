@@ -6,50 +6,50 @@ export const jobComparisonMode: EngineMode<ComparisonContent> = {
   id: EngineContext.COMPARISON,
   name: "Match Analysis",
 
-  buildPrompt(input: EngineInput<ComparisonContent>) {
+  buildPrompt(input: EngineInput<ComparisonContent>): string {
     const { jobDescription, userResume } = input.content;
     return `
-      You are an expert Technical Recruiter and ATS (Applicant Tracking System) optimizer.
-      
+      You are an expert Technical Recruiter and ATS optimizer.
       TASK:
       1. Compare the following Resume against the Job Description.
-      2. Calculate a Match Percentage (0-100) based on skills, seniority, and keywords.
-      3. Identify specific "Matches" (Skills the user has).
-      4. Identify specific "Gaps" (Skills/Requirements the user is missing).
-
+      2. Calculate a Match Percentage (0-100) based on how many of the JD's explicitly stated requirements are evidenced in the resume — not general seniority or tone.
+      3. Identify "Matches" and "Gaps" as concrete, named skills/requirements, not vague categories.
       Job Description: ${jobDescription}
       User Resume: ${userResume}
 
-      Return ONLY a JSON object:
+      Return ONLY a JSON object, no markdown fences:
       {
         "matchScore": number,
-        "matchingSkills": ["skill1", "skill2"],
-        "missingSkills": ["skillA", "skillB"],
-        "summary": "One sentence summary of the fit",
-        "actionPlan": ["suggestion 1", "suggestion 2"]
+        "matchingSkills": ["skill1"],
+        "missingSkills": ["skillA"],
+        "summary": "text",
+        "actionPlan": ["suggestion"]
       }
-    `;
+    `.trim();
   },
 
   formatOutput(raw: string, input: EngineInput<ComparisonContent>): EngineOutput {
     try {
-      const parsed = JSON.parse(raw);
+      const cleanRaw = raw.replace(/```json\n?|```/g, "").trim();
+      const parsed = JSON.parse(cleanRaw);
 
-      const matchList = parsed.matchingSkills.map((s: string) => `✅ ${s}`).join("\n");
-      const gapList = parsed.missingSkills.map((s: string) => `❌ ${s}`).join("\n");
+      // Ensure arrays exist before mapping to prevent runtime crashes
+      const matches = Array.isArray(parsed.matchingSkills) ? parsed.matchingSkills : [];
+      const gaps = Array.isArray(parsed.missingSkills) ? parsed.missingSkills : [];
+      const plan = Array.isArray(parsed.actionPlan) ? parsed.actionPlan : [];
 
       return {
-        body: `### Match Score: ${parsed.matchScore}%\n\n${parsed.summary}`,
+        body: `### Match Score: ${parsed.matchScore ?? 0}%\n\n${parsed.summary ?? ""}`,
         sections: {
-          score: `${parsed.matchScore}%`,
-          matches: matchList,
-          gaps: gapList,
-          advice: parsed.actionPlan.join(". ")
+          score: `${parsed.matchScore ?? 0}%`,
+          matches: matches.map((s: string) => `✅ ${s}`).join("\n"),
+          gaps: gaps.map((s: string) => `❌ ${s}`).join("\n"),
+          advice: plan.join(". ")
         },
         analysis: {
-          score: Number(parsed.matchScore),
-          critique: String(parsed.summary),
-          suggestions: parsed.actionPlan
+          score: Number(parsed.matchScore ?? 0),
+          critique: String(parsed.summary ?? ""),
+          suggestions: plan
         },
         meta: {
           mode: EngineContext.COMPARISON,
@@ -57,6 +57,7 @@ export const jobComparisonMode: EngineMode<ComparisonContent> = {
         }
       };
     } catch (e) {
+      console.error("Comparison Parse Error:", e);
       return {
         body: "Error parsing comparison data.",
         sections: { error: "Failed to analyze match." },

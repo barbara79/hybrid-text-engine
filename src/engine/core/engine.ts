@@ -14,21 +14,31 @@ export async function runEngine<TContent>(
   const firstPrompt = mode.buildPrompt(input);
   const firstRaw = await runner.run(firstPrompt);
   let result = mode.formatOutput(firstRaw, input);
+  let attempts = 1;
+  const MAX_ATTEMPTS = 2;
   
-if (result.analysis && result.analysis.score < 80) {
-    const refinementPrompt = `
-      Your previous attempt received a quality score of ${result.analysis.score}/100.
-      Critique: ${result.analysis.critique}
-      
-      Please rewrite the content to address these specific suggestions:
-      ${result.analysis.suggestions.join(", ")}
-      
-      Return the updated version in the same JSON format.
-    `;
+  if (result.analysis && result.analysis.score < 80) {
+      const refinementPrompt = `
+        Your previous attempt received a quality score of ${result.analysis.score}/100.
+        Critique: ${result.analysis.critique}
+        
+        Please rewrite the content to address these specific suggestions:
+        ${result.analysis.suggestions.join(", ")}
+        
+        Return the updated version in the same JSON format.
+      `;
 
-    const refinedRaw = await runner.run(refinementPrompt);
-    result = mode.formatOutput(refinedRaw, input);
-  }
+      const refinedRaw = await runner.run(refinementPrompt);
+      result = mode.formatOutput(refinedRaw, input);
+      attempts++;
+    }
 
-  return result;
+  return {
+    ...result,
+    meta: {
+      ...result.meta,
+      refinementApplied: attempts > 1,
+      finalScore: result.analysis?.score ?? null,
+    },
+  };
 }

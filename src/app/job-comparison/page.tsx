@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { EngineModeId, Provider } from "@/engine/core/types";
 
 export default function JobComparisonPage() {
   const [formData, setFormData] = useState({ resume: "", jd: "" });
@@ -27,9 +26,7 @@ export default function JobComparisonPage() {
         };
     const res = await fetch("/api/generate", {
       method: "POST",
-      body: JSON.stringify({
-        payload
-      }),
+      body: JSON.stringify(payload),
     });
     const data = await res.json();
     setResult(data);

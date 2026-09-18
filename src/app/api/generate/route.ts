@@ -8,11 +8,19 @@ import { getRunner } from "@/engine/runner/factory";
 export async function POST(req: NextRequest) {
   try {
     const body: EngineRequest = await req.json();
+    if (!body?.mode || !body?.provider) {
+      return NextResponse.json({ error: "Missing required fields: mode, provider" }, { status: 400 });
+    }
+
+    if (!MODE_REGISTRY[body.mode]) {
+      return NextResponse.json({ error: "Invalid mode" }, { status: 400 });
+    }
+
     const modeLogic = MODE_REGISTRY[body.mode];
   
-  if (!modeLogic) {
-    return NextResponse.json({ error: "Invalid mode" }, { status: 400 });
-  }
+    if (!modeLogic) {
+      return NextResponse.json({ error: "Invalid mode" }, { status: 400 });
+    }
 
     const runner = getRunner(body.provider);
 
