@@ -37,6 +37,7 @@ export async function runEngine<TContent>(
     ...result,
     meta: {
       ...result.meta,
+      mode: result.meta?.mode ?? input.context,
       refinementApplied: attempts > 1,
       finalScore: result.analysis?.score,
     },
