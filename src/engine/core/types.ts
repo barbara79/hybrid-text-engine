@@ -45,6 +45,7 @@ export interface EngineConstraints {
   language?: string
   maxLength?: number
   platform?: string
+  refinementApplied?: boolean
 }
 
 export interface EngineInput<TContent> {
@@ -70,5 +71,6 @@ export interface EngineOutput {
     mode: EngineContext;
     tone?: Tone;
     refinementApplied?: boolean;
+    finalScore?: number;
   };
 }
