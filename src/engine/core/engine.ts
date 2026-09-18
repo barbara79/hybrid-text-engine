@@ -38,7 +38,7 @@ export async function runEngine<TContent>(
     meta: {
       ...result.meta,
       refinementApplied: attempts > 1,
-      finalScore: result.analysis?.score ?? null,
+      finalScore: result.analysis?.score,
     },
   };
 }
