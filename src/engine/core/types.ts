@@ -69,5 +69,6 @@ export interface EngineOutput {
   meta?: {
     mode: EngineContext;
     tone?: Tone;
+    refinementApplied?: boolean;
   };
 }

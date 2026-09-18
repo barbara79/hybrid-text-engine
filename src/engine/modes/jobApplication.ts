@@ -75,6 +75,7 @@ export const jobApplicationMode: EngineMode<JobApplicationContent> = {
       meta: {
         mode: EngineContext.JOB,
         tone: input.tone,
+        refinementApplied: input.refinementApplied,
       }
     };
   }

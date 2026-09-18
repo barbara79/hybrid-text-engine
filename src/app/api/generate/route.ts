@@ -3,6 +3,7 @@ import { runEngine } from "@/engine/core/engine"
 import { EngineRequest } from "@/engine/core/request"
 import { MODE_REGISTRY } from "@/engine/core/registry"
 import { getRunner } from "@/engine/runner/factory";
+import { EngineMode } from "@/engine/core/mode";
 
 
 export async function POST(req: NextRequest) {
@@ -24,7 +25,7 @@ export async function POST(req: NextRequest) {
 
     const runner = getRunner(body.provider);
 
-    const result = await runEngine(modeLogic, body, runner);
+    const result = await runEngine(modeLogic as EngineMode<any>, body, runner);
 
     return NextResponse.json(result);
   } catch (err) {
