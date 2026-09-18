@@ -3,26 +3,27 @@
 exports[`JobApplicationMode should return cover letter, resume, and quality analysis 1`] = `
 {
   "analysis": {
-    "critique": "Strong skills match.",
+    "critique": "Strong technical alignment with the role.",
+    "detectedCompany": "Awesome Startup",
+    "detectedRole": "Frontend Developer",
     "score": 90,
     "suggestions": [
-      "Quantify achievements.",
+      "Add a measurable achievement",
+      "Shorten the opening paragraph",
     ],
   },
-  "body": "Dear Hiring Manager, I am a Frontend Developer...
-
----
-
-Role: Frontend Developer
-Summary: Expert developer.",
+  "body": "Dear Hiring Manager, I am excited to apply for the Frontend Developer role...",
   "meta": {
+    "finalScore": 90,
     "mode": "job",
+    "refinementApplied": false,
     "tone": "professional",
   },
   "sections": {
-    "coverLetter": "Dear Hiring Manager, I am a Frontend Developer...",
-    "resume": "Role: Frontend Developer
-Summary: Expert developer.",
+    "coverLetter": "Dear Hiring Manager, I am excited to apply for the Frontend Developer role...",
+    "detectedCompany": "Awesome Startup",
+    "detectedRole": "Frontend Developer",
+    "resume": "Senior developer with 5+ years of React and TypeScript experience.",
   },
 }
 `;

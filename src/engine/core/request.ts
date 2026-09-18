@@ -1,24 +1,38 @@
-import { JobApplicationContent, MarketplaceContent } from "./content";
-import { ComparisonContent, EngineInput, Tone } from "./types";
+import { JobApplicationContent, ComparisonContent, MarketplaceContent } from "./content";
+import { Audience,  EngineContext,  EngineModeId, Provider, Tone } from "./types";
 
-export type JobApplicationRequest = {
-  mode: "jobApplication"
-  context: "job"
+type BaseRequest = {
+  provider: Provider;
+  tone: Tone;
+  audience: Audience;
+};
+
+export type JobApplicationRequest = BaseRequest & {
+  mode: typeof EngineModeId.JOB_APPLICATION;
+  context: typeof EngineContext.JOB;
   tone: Tone
-  audience: string
+  audience: Audience
   content: JobApplicationContent
 }
 
-export type MarketplaceRequest = {
-  mode: "marketplace"
-  context: "marketplace"
-  tone: Tone
-  audience: string
+export type MarketplaceRequest = BaseRequest & {
+  mode: typeof EngineModeId.MARKETPLACE;
+  context: typeof EngineContext.MARKETPLACE;
+  tone: Tone;
+  audience: Audience;
   content: MarketplaceContent
 }
 
-export type EngineRequest =
-  | (EngineInput<JobApplicationContent> & { mode: "jobApplication" })
-  | (EngineInput<MarketplaceContent> & { mode: "marketplace" })
-  | (EngineInput<ComparisonContent> & { mode: "comparison" });
+export type JobComparisonRequest = BaseRequest & {
+  mode: typeof EngineModeId.JOB_COMPARISON;
+  context: typeof EngineContext.COMPARISON;
+  tone: Tone;
+  audience: Audience;
+  content: ComparisonContent;
+};
+
+export type EngineRequest = 
+  | JobApplicationRequest 
+  | MarketplaceRequest 
+  | JobComparisonRequest;
 

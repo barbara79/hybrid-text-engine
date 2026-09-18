@@ -1,44 +1,80 @@
-// tests/engine/marketplace.test.ts
-import { marketplaceMode } from "../../src/engine/modes/marketplace"; 
-import { EngineContext, EngineInput, Tone } from "@/engine/core/types";
+import { marketplaceMode } from "@/engine/modes/marketplace";
+import { Audience, EngineContext, EngineInput, Tone } from "@/engine/core/types";
 import { MarketplaceContent } from "@/engine/core/content";
 import { FakeRunner } from "@/engine/runner/fakeRunner";
 import { runEngine } from "@/engine/core/engine";
 
 describe("Marketplace Mode", () => {
+  const baseInput: EngineInput<MarketplaceContent> = {
+    context: EngineContext.MARKETPLACE,
+    tone: Tone.FRIENDLY,
+    audience: Audience.BUYERS,
+    content: {
+      productName: "Vintage Leather Bag",
+      description: "Genuine leather, slightly used, excellent condition",
+      price: 120,
+      platform: "eBay",
+    },
+  };
+
   it("should return deterministic sections from fixed input", async () => {
-    const input: EngineInput<MarketplaceContent> = {
-      context: EngineContext.MARKETPLACE,
-      tone: Tone.FRIENDLY,
-      audience: "general buyers",
-      content: {
-        productName: "Vintage Leather Bag",
-        description: "Genuine leather, slightly used, excellent condition",
-        price: 120,
-        platform: "eBay",
-      },
-    };
-
     const runner = new FakeRunner();
-    const result = await runEngine(marketplaceMode, input, runner);
 
-    // 1. Check the structured sections
+    // Explicit mock — we control exactly what "the AI" returns, so this
+    // test doesn't depend on FakeRunner's internal prompt-matching logic.
+    jest.spyOn(runner, "run").mockResolvedValue(
+      JSON.stringify({
+        title: "Vintage Leather Bag - Genuine Leather, Excellent Condition",
+        description: "This vintage leather bag is in excellent condition...",
+        tags: ["vintage", "leather", "bag"],
+        analysis: {
+          score: 88,
+          critique: "Clear, appealing description with good keywords.",
+          suggestions: ["Mention dimensions"],
+        },
+      })
+    );
+
+    const result = await runEngine(marketplaceMode, baseInput, runner);
+
     expect(result.sections).toBeDefined();
     expect(result.sections.title).toBeDefined();
-    // In our new mode, tags are joined by a comma
-    expect(result.sections.seoTags).toBeDefined(); 
+    expect(result.sections.seoTags).toBe("vintage, leather, bag");
 
-    // 2. Check the "Unique" Analysis logic
     expect(result.analysis).toBeDefined();
     expect(typeof result.analysis?.score).toBe("number");
     expect(result.analysis?.score).toBeGreaterThan(0);
     expect(result.analysis?.critique).not.toBe("");
 
-    // 3. Ensure the body is being populated correctly from the AI JSON
-    // Note: Your FakeRunner needs to return "Vintage Leather Bag" for this to pass!
-    expect(result.body).toContain("Vintage Leather Bag");
+    expect(result.body).toContain("vintage leather bag");
 
-    // 4. Update snapshot to include the new JSON structure (score, tags, etc.)
     expect(result).toMatchSnapshot();
+  });
+
+  it("should correctly parse a response wrapped in a markdown code fence", async () => {
+    // Gemini/OpenAI often wrap JSON responses in ```json ... ``` — this
+    // test makes sure formatOutput() strips that before parsing.
+    // (This will fail until marketplaceMode.formatOutput() strips the
+    // fence the same way jobApplicationMode and jobComparisonMode do.)
+    const runner = new FakeRunner();
+
+    const fencedResponse =
+      "```json\n" +
+      JSON.stringify({
+        title: "Vintage Leather Bag",
+        description: "A great bag.",
+        tags: ["vintage", "leather"],
+        analysis: { score: 80, critique: "Solid.", suggestions: [] },
+      }) +
+      "\n```";
+
+    jest.spyOn(runner, "run").mockResolvedValue(fencedResponse);
+
+    const result = await runEngine(marketplaceMode, baseInput, runner);
+
+    // If the fence isn't stripped, JSON.parse throws and formatOutput's
+    // catch block returns an error shape instead of real sections.
+    expect(result.sections.error).toBeUndefined();
+    expect(result.sections.title).toBe("Vintage Leather Bag");
   });
 });

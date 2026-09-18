@@ -17,11 +17,11 @@ export const marketplaceMode: EngineMode<MarketplaceContent> = {
       1. Create a high-converting marketplace listing for: ${productName}.
       2. Details: ${description}, Price: ${price}, Platform: ${platform}.
       3. Analyze the listing for SEO and buyer psychology.
-      
+      4. Do not invent specifications, certifications, or claims not present in the provided details.
+
       Tone: ${tone}
       Audience: ${audience}
-
-      Return ONLY a JSON object:
+      Return ONLY a JSON object, no markdown fences:
       {
         "title": "A catchy, SEO-optimized title",
         "description": "The full sales description",
@@ -37,7 +37,8 @@ export const marketplaceMode: EngineMode<MarketplaceContent> = {
 
   formatOutput(raw: string, input: EngineInput<MarketplaceContent>): EngineOutput {
     try {
-      const parsed = JSON.parse(raw);
+      const cleanRaw = raw.replace(/```json\n?|```/g, "").trim();
+      const parsed = JSON.parse(cleanRaw);
 
       return {
         body: String(parsed.description ?? ""),

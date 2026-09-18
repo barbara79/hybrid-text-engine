@@ -3,21 +3,23 @@
 exports[`Marketplace Mode should return deterministic sections from fixed input 1`] = `
 {
   "analysis": {
-    "critique": "Good description.",
-    "score": 85,
+    "critique": "Clear, appealing description with good keywords.",
+    "score": 88,
     "suggestions": [
-      "Add more keywords.",
+      "Mention dimensions",
     ],
   },
-  "body": "This Vintage Leather Bag is a great item for sale. Price: 120 Platform: eBay",
+  "body": "This vintage leather bag is in excellent condition...",
   "meta": {
+    "finalScore": 88,
     "mode": "marketplace",
+    "refinementApplied": false,
     "tone": "friendly",
   },
   "sections": {
-    "description": "This Vintage Leather Bag is a great item for sale. Price: 120 Platform: eBay",
-    "seoTags": "test, demo",
-    "title": "Vintage Leather Bag",
+    "description": "This vintage leather bag is in excellent condition...",
+    "seoTags": "vintage, leather, bag",
+    "title": "Vintage Leather Bag - Genuine Leather, Excellent Condition",
   },
 }
 `;

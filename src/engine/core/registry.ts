@@ -1,11 +1,18 @@
-import { EngineModeId } from "./types";
+import { EngineContext, EngineModeId } from "./types";
 import { jobApplicationMode } from "../modes/jobApplication";
 import { marketplaceMode } from "../modes/marketplace";
-import { comparisonMode } from "../modes/comparison";
 import { EngineMode } from "./mode";
+import { jobComparisonMode } from "../modes/jobComparison";
+import { JobApplicationContent, ComparisonContent, MarketplaceContent } from "./content";
 
-export const MODE_REGISTRY: Record<EngineModeId, EngineMode<any>> = {
+interface ModeContentMap {
+  jobApplication: JobApplicationContent;
+  marketplace: MarketplaceContent;
+  jobComparison: ComparisonContent;
+}
+
+export const MODE_REGISTRY: { [K in EngineModeId]: EngineMode<ModeContentMap[K]> } = {
   jobApplication: jobApplicationMode,
   marketplace: marketplaceMode,
-  comparison: comparisonMode,
+  jobComparison: jobComparisonMode,
 };

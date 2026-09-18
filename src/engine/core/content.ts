@@ -1,6 +1,7 @@
 export interface JobApplicationContent {
   role: string
   company: string
+  jobDescription: string 
   experience: string
   skills?: string[]
   education?: string
@@ -12,4 +13,9 @@ export interface MarketplaceContent {
   price?: number;
   audience?: string;
   platform?: string;
+}
+
+export interface ComparisonContent {
+  jobDescription: string;
+  userResume: string;
 }
