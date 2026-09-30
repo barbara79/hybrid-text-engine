@@ -1,4 +1,3 @@
-// engine/core/assertions.ts
 import { EngineContext } from "./types";
 
 export function assertContextMatch(

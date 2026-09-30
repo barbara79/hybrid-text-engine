@@ -35,7 +35,6 @@ export class OpenAIRunner implements EngineRunner {
     });
 
     if (!response.ok) {
-      // 2. Cast errorData to our Error interface
       const errorData = (await response.json()) as OpenAIError;
       throw new Error(`OpenAI API Error: ${errorData.error.message}`);
     }

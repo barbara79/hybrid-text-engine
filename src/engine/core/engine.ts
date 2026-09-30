@@ -51,7 +51,6 @@ export async function runEngine<TContent>(
     const refined = mode.formatOutput(refinedRaw, input);
     attempts++;
 
-    // Unparseable refinement, or one that made things worse: keep the best result so far.
     if (!refined.analysis || refined.analysis.score < result.analysis.score) break;
 
     raw = refinedRaw;

@@ -7,7 +7,7 @@ import { runEngine } from "@/engine/core/engine";
 describe("Engine Context Validation", () => {
   it("throws when mode and input context do not match", async () => {
     const input: EngineInput<MarketplaceContent> = {
-      context: EngineContext.JOB, // Mismatched context
+      context: EngineContext.JOB, 
       tone: "friendly",
       audience: "buyers",
       content: {

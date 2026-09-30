@@ -54,7 +54,6 @@ export const jobApplicationMode: EngineMode<JobApplicationContent> = {
     }
   },
 
-  // Helper to keep formatOutput clean
   processParsedData(rawParsed: unknown, input: EngineInput<JobApplicationContent>): EngineOutput {
     const parsed = rawParsed as {
       coverLetter?: string;
@@ -72,7 +71,6 @@ export const jobApplicationMode: EngineMode<JobApplicationContent> = {
       sections: {
         coverLetter: String(parsed.coverLetter || ""),
         resume: String(parsed.resume || ""),
-        // Explicitly passing these so the frontend {result.analysis.detectedRole} works
         detectedRole: String(parsed.analysis?.detectedRole || ""),
         detectedCompany: String(parsed.analysis?.detectedCompany || ""),
       },
@@ -80,7 +78,6 @@ export const jobApplicationMode: EngineMode<JobApplicationContent> = {
         score: Number(parsed.analysis?.score || 0),
         critique: String(parsed.analysis?.critique || ""),
         suggestions: Array.isArray(parsed.analysis?.suggestions) ? parsed.analysis.suggestions : [],
-        // Adding them here too just to match your frontend code line 72
         detectedRole: String(parsed.analysis?.detectedRole || ""),
         detectedCompany: String(parsed.analysis?.detectedCompany || ""),
       },

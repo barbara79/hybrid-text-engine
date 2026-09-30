@@ -33,7 +33,6 @@ export const jobComparisonMode: EngineMode<ComparisonContent> = {
       const cleanRaw = raw.replace(/```json\n?|```/g, "").trim();
       const parsed = JSON.parse(cleanRaw);
 
-      // Ensure arrays exist before mapping to prevent runtime crashes
       const matches = Array.isArray(parsed.matchingSkills) ? parsed.matchingSkills : [];
       const gaps = Array.isArray(parsed.missingSkills) ? parsed.missingSkills : [];
       const plan = Array.isArray(parsed.actionPlan) ? parsed.actionPlan : [];

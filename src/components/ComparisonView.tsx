@@ -23,7 +23,6 @@ export default function ComparisonView({ result }: ComparisonProps) {
 
   return (
     <div className="space-y-6 animate-in slide-in-from-bottom-4 duration-500">
-      {/* Hero Score Card — unchanged, this part is fine */}
       <div className="bg-gradient-to-br from-indigo-50 to-white border border-indigo-100 p-6 rounded-2xl shadow-sm">
         <div className="flex justify-between items-center">
           <div>

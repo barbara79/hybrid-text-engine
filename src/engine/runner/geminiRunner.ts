@@ -12,13 +12,11 @@ export class GeminiRunner implements EngineRunner {
   }
 
   async run(prompt: string): Promise<string> {
-    // the FLASH model is included in the free-tier, so we can use it for testing without needing a paid account
-
+ 
       try {
           const response = await this.client.models.generateContent({
             model: process.env.GEMINI_MODEL || 'gemini-2.5-flash', 
             contents: prompt,
-            // We leave out config entirely for a moment to prove the connection
           });
 
         const text = response.text || "";

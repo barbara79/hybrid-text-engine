@@ -24,7 +24,6 @@ describe("OpenAIRunner Integration (mocked fetch)", () => {
       choices: [{ message: { content: aiContent } }],
     });
 
-    // Mock fetch response, simulating OpenAI's API
     fetchMock.mockResponseOnce(mockOpenAIResponse);
 
     const runner = new OpenAIRunner({ apiKey: "test" });

@@ -11,9 +11,7 @@ import { EngineRunner } from "./types";
  */
 export class FakeRunner implements EngineRunner {
   async run(prompt: string): Promise<string> {
-    // 1. JOB APPLICATION
-    // Matches jobApplicationMode.buildPrompt, which writes:
-    //   "You are an elite career consultant..." and "- RESUME: ..."
+
     if (prompt.includes("career consultant") || prompt.includes("RESUME:")) {
       return JSON.stringify({
         coverLetter: "Dear Hiring Manager, I am excited to apply for this role...",
@@ -28,10 +26,6 @@ export class FakeRunner implements EngineRunner {
       });
     }
 
-    // 2. MARKETPLACE
-    // Matches marketplaceMode.buildPrompt, which writes:
-    //   "You are a professional e-commerce copywriter..."
-    //   "Create a high-converting marketplace listing for: <productName>."
     if (prompt.includes("e-commerce copywriter") || prompt.includes("marketplace listing")) {
       const itemMatch = prompt.match(/marketplace listing for:\s*(.*?)\./) || [null, "Vintage Leather Bag"];
       const itemName = itemMatch[1]?.trim() || "Vintage Leather Bag";
@@ -48,9 +42,6 @@ export class FakeRunner implements EngineRunner {
       });
     }
 
-    // 3. JOB COMPARISON
-    // Matches jobComparisonMode.buildPrompt, which writes:
-    //   "You are an expert Technical Recruiter and ATS optimizer..."
     if (prompt.includes("ATS optimizer") || prompt.includes("Match Percentage")) {
       return JSON.stringify({
         matchScore: 75,
@@ -61,8 +52,6 @@ export class FakeRunner implements EngineRunner {
       });
     }
 
-    // Fallback: if none of the above matched, something in a prompt's
-    // wording changed and this file needs updating to match it.
     return JSON.stringify({ error: "No mock data for this prompt" });
   }
 }

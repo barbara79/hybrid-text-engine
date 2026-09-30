@@ -13,7 +13,6 @@ export default function JobApplicationPage() {
 
   const handleGenerate = async () => {
     setLoading(true);
-    // Note: This uses the 'job-application' mode in your registry
     const res = await fetch("/api/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },

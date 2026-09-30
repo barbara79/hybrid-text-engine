@@ -20,8 +20,6 @@ describe("Marketplace Mode", () => {
   it("should return deterministic sections from fixed input", async () => {
     const runner = new FakeRunner();
 
-    // Explicit mock — we control exactly what "the AI" returns, so this
-    // test doesn't depend on FakeRunner's internal prompt-matching logic.
     jest.spyOn(runner, "run").mockResolvedValue(
       JSON.stringify({
         title: "Vintage Leather Bag - Genuine Leather, Excellent Condition",
@@ -52,10 +50,6 @@ describe("Marketplace Mode", () => {
   });
 
   it("should correctly parse a response wrapped in a markdown code fence", async () => {
-    // Gemini/OpenAI often wrap JSON responses in ```json ... ``` — this
-    // test makes sure formatOutput() strips that before parsing.
-    // (This will fail until marketplaceMode.formatOutput() strips the
-    // fence the same way jobApplicationMode and jobComparisonMode do.)
     const runner = new FakeRunner();
 
     const fencedResponse =
@@ -72,8 +66,6 @@ describe("Marketplace Mode", () => {
 
     const result = await runEngine(marketplaceMode, baseInput, runner);
 
-    // If the fence isn't stripped, JSON.parse throws and formatOutput's
-    // catch block returns an error shape instead of real sections.
     expect(result.sections.error).toBeUndefined();
     expect(result.sections.title).toBe("Vintage Leather Bag");
   });

@@ -1,7 +1,6 @@
 import { POST } from "../../src/app/api/generate/route";
 import { NextRequest } from "next/server";
 
-// Helper to create a mock NextRequest with a JSON body
 function createRequest(body: object): NextRequest {
   return {
     method: "POST",
@@ -23,10 +22,6 @@ describe("POST /api/generate", () => {
   it("should generate content for JobApplication mode", async () => {
     const req = createRequest({
       mode: "jobApplication",
-      // getRunner() reads body.provider directly — without this, the
-      // route falls back to FakeRunner by coincidence (its default
-      // case), not by an explicit decision. Setting it here makes the
-      // test actually assert what it looks like it's asserting.
       provider: "openai",
       context: "job",
       tone: "professional",
@@ -34,7 +29,6 @@ describe("POST /api/generate", () => {
       content: {
         role: "Frontend Developer",
         company: "Awesome Startup",
-        // jobDescription is required on JobApplicationContent
         jobDescription: "Looking for a Frontend Developer with React experience.",
         experience: "5+ years",
         skills: ["React"],
@@ -46,8 +40,6 @@ describe("POST /api/generate", () => {
 
     expect(data.sections).toBeDefined();
     expect(data.sections.coverLetter).toBeDefined();
-    // This must match what FakeRunner's job-application branch returns —
-    // see fakeRunner.ts's "career consultant" / "RESUME:" match.
     expect(data.sections.coverLetter).toContain("excited to apply");
   });
 

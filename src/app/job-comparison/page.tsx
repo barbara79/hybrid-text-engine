@@ -14,14 +14,14 @@ export default function JobComparisonPage() {
   const handleMatch = async () => {
     setLoading(true);
     const payload = {
-        mode: "jobComparison",  // Must match the key in MODE_REGISTRY
-        context: "comparison",  // THIS IS THE MISSING PIECE causing your error
+        mode: "jobComparison",  
+        context: "comparison",  
         provider: selectedProvider,
         tone: "professional",
         audience: "recruiters",
         content: {
-            userResume: resumeText,      // Ensure keys match: userResume
-            jobDescription: jdText,      // Ensure keys match: jobDescription
+            userResume: resumeText,  
+            jobDescription: jdText,     
         },
         };
     const res = await fetch("/api/generate", {
