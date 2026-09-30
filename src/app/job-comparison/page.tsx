@@ -1,20 +1,20 @@
 "use client";
 import { useState } from "react";
+import { EngineOutput } from "@/engine/core/types";
 import Link from "next/link";
 
 export default function JobComparisonPage() {
-  const [formData, setFormData] = useState({ resume: "", jd: "" });
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<EngineOutput | null>(null);
   const [loading, setLoading] = useState(false);
-  // ComparisonPage.tsx
   const [resumeText, setResumeText] = useState("");
   const [jdText, setJdText] = useState("");
-  const [selectedProvider, setSelectedProvider] = useState("gemini"); // Default provider
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- no provider switcher UI yet, kept for when one is added
+  const [selectedProvider, setSelectedProvider] = useState("gemini");
 
   const handleMatch = async () => {
     setLoading(true);
     const payload = {
-        mode: "comparison",     // Required for the Registry to find the mode
+        mode: "jobComparison",  // Must match the key in MODE_REGISTRY
         context: "comparison",  // THIS IS THE MISSING PIECE causing your error
         provider: selectedProvider,
         tone: "professional",
@@ -46,12 +46,12 @@ export default function JobComparisonPage() {
         <textarea 
           placeholder="Paste CV..." 
           className="h-80 p-4 border rounded-2xl bg-white text-slate-900 shadow-inner focus:ring-2 focus:ring-indigo-500 outline-none"
-          onChange={(e) => setFormData({...formData, resume: e.target.value})}
+          onChange={(e) => setResumeText(e.target.value)}
         />
         <textarea 
           placeholder="Paste Job Description..." 
           className="h-80 p-4 border rounded-2xl bg-white text-slate-900 shadow-inner focus:ring-2 focus:ring-indigo-500 outline-none"
-          onChange={(e) => setFormData({...formData, jd: e.target.value})}
+          onChange={(e) => setJdText(e.target.value)}
         />
       </div>
 
@@ -81,7 +81,7 @@ export default function JobComparisonPage() {
                 <h3 className="font-bold text-slate-800 border-b pb-2">Suitability Analysis</h3>
                 {/* Protect the body as well */}
                 <p className="text-slate-700 leading-relaxed italic">
-                "{result?.body || "No analysis generated."}"
+                {`"${result?.body || "No analysis generated."}"`}
                 </p>
             </div>
         </div>

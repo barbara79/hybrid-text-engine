@@ -4,6 +4,31 @@ import { EngineMode } from "./mode"
 import { assertContextMatch } from "./assertions";
 import { EngineRunner } from "../runner/types";
 
+export const MIN_SCORE = 80;
+// Total generations allowed: 1 initial + up to 2 refinement passes.
+export const MAX_ATTEMPTS = 3;
+
+type Analysis = NonNullable<EngineOutput["analysis"]>;
+
+// The runner is stateless, so the refinement prompt must carry the original
+// task and the previous answer, not just the critique.
+function buildRefinementPrompt(originalPrompt: string, previousRaw: string, analysis: Analysis): string {
+  return `
+${originalPrompt}
+
+---
+YOUR PREVIOUS ANSWER:
+${previousRaw}
+
+QUALITY REVIEW OF THAT ANSWER:
+Score: ${analysis.score}/100
+Critique: ${analysis.critique}
+Suggestions: ${analysis.suggestions.join("; ")}
+
+Rewrite your previous answer to address the review. Keep the same task and rules as above, do not invent facts, and return ONLY the JSON in the same format.
+  `.trim();
+}
+
 export async function runEngine<TContent>(
   mode: EngineMode<TContent>,
   input: EngineInput<TContent>,
@@ -11,27 +36,27 @@ export async function runEngine<TContent>(
 ): Promise<EngineOutput> {
   assertContextMatch(mode.id, input.context);
 
-  const firstPrompt = mode.buildPrompt(input);
-  const firstRaw = await runner.run(firstPrompt);
-  let result = mode.formatOutput(firstRaw, input);
+  const prompt = mode.buildPrompt(input);
+  let raw = await runner.run(prompt);
+  let result = mode.formatOutput(raw, input);
   let attempts = 1;
-  const MAX_ATTEMPTS = 2;
-  
-  if (result.analysis && result.analysis.score < 80) {
-      const refinementPrompt = `
-        Your previous attempt received a quality score of ${result.analysis.score}/100.
-        Critique: ${result.analysis.critique}
-        
-        Please rewrite the content to address these specific suggestions:
-        ${result.analysis.suggestions.join(", ")}
-        
-        Return the updated version in the same JSON format.
-      `;
 
-      const refinedRaw = await runner.run(refinementPrompt);
-      result = mode.formatOutput(refinedRaw, input);
-      attempts++;
-    }
+  while (
+    mode.refinable &&
+    result.analysis &&
+    result.analysis.score < MIN_SCORE &&
+    attempts < MAX_ATTEMPTS
+  ) {
+    const refinedRaw = await runner.run(buildRefinementPrompt(prompt, raw, result.analysis));
+    const refined = mode.formatOutput(refinedRaw, input);
+    attempts++;
+
+    // Unparseable refinement, or one that made things worse: keep the best result so far.
+    if (!refined.analysis || refined.analysis.score < result.analysis.score) break;
+
+    raw = refinedRaw;
+    result = refined;
+  }
 
   return {
     ...result,

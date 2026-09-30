@@ -1,4 +1,4 @@
-import { EngineContext, EngineModeId } from "./types";
+import { EngineModeId } from "./types";
 import { jobApplicationMode } from "../modes/jobApplication";
 import { marketplaceMode } from "../modes/marketplace";
 import { EngineMode } from "./mode";
