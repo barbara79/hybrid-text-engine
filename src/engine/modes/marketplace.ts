@@ -5,6 +5,7 @@ import { MarketplaceContent } from "../core/content"
 export const marketplaceMode: EngineMode<MarketplaceContent> = {
   id: EngineContext.MARKETPLACE,
   name: "Marketplace Mode",
+  refinable: true,
 
   buildPrompt(input: EngineInput<MarketplaceContent>) {
       const { productName, description, price, platform } = input.content;
@@ -57,7 +58,7 @@ export const marketplaceMode: EngineMode<MarketplaceContent> = {
           tone: input.tone,
         },
       };
-    } catch (e) {
+    } catch {
       return {
         body: raw,
         sections: { error: "Failed to parse AI marketplace data" },

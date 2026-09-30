@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
 
     const runner = getRunner(body.provider);
 
-    const result = await runEngine(modeLogic as EngineMode<any>, body, runner);
+    const result = await runEngine(modeLogic as EngineMode<unknown>, body, runner);
 
     return NextResponse.json(result);
   } catch (err) {
@@ -37,4 +37,3 @@ export async function POST(req: NextRequest) {
     )
   }
 }
-

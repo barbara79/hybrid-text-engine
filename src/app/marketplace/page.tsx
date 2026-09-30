@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { EngineOutput } from "@/engine/core/types";
 import Link from "next/link";
 import { Audience, EngineContext, EngineModeId, Provider, Tone } from "@/engine/core/types";
 
 export default function MarketplacePage() {
   const [formData, setFormData] = useState({ productName: "", description: "", price: "" });
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<EngineOutput | null>(null);
   const [loading, setLoading] = useState(false);
 
   const handleGenerate = async () => {

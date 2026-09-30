@@ -15,14 +15,45 @@ jobs:
       matrix:
         node-version: [20]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0     # full history, needed for secret scanning below
+
       - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
       - name: Install dependencies
-        run: npm install
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
       - name: Type check
         run: npx tsc --noEmit
+
+      - name: Check for leftover commented-out code and TODO/FIXME markers
+        run: |
+          # Flags commented-out code (a '//' followed by something that looks like a statement:
+          # const/let/var/function/import/export/if/return, or a call like `foo(...)`), plus any
+          # TODO/FIXME/XXX marker. This is a heuristic, not a parser - it will have false positives
+          # on legitimate comments that happen to start with these words; adjust the pattern below
+          # as needed rather than treating it as gospel.
+          PATTERN='//\s*(const|let|var|function|import|export|if\s*\(|return\b)|//\s*[a-zA-Z_$][a-zA-Z0-9_$]*\([^)]*\)\s*;?\s*$|TODO|FIXME|XXX'
+          MATCHES=$(grep -rnE "$PATTERN" src tests --include='*.ts' --include='*.tsx' || true)
+          if [ -n "$MATCHES" ]; then
+            echo "$MATCHES"
+            echo ""
+            echo "::error::Found commented-out code or TODO/FIXME markers. Remove dead code before merging, or resolve/track the TODO."
+            exit 1
+          fi
+
       - name: Run Jest tests
         run: npm test
+
+      - name: Scan for committed secrets
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

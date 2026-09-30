@@ -16,7 +16,7 @@ export class GeminiRunner implements EngineRunner {
 
       try {
           const response = await this.client.models.generateContent({
-            model: 'gemini-1.5-flash-latest', 
+            model: process.env.GEMINI_MODEL || 'gemini-2.5-flash', 
             contents: prompt,
             // We leave out config entirely for a moment to prove the connection
           });

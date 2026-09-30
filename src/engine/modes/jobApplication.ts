@@ -5,6 +5,7 @@ import { JobApplicationContent } from "../core/content";
 export const jobApplicationMode: EngineMode<JobApplicationContent> = {
   id: EngineContext.JOB,
   name: "Job Application Mode",
+  refinable: true,
 
   buildPrompt(input: EngineInput<JobApplicationContent>): string {
     const resumeText = input.content.experience;
@@ -54,7 +55,18 @@ export const jobApplicationMode: EngineMode<JobApplicationContent> = {
   },
 
   // Helper to keep formatOutput clean
-  processParsedData(parsed: any, input: EngineInput<JobApplicationContent>): EngineOutput {
+  processParsedData(rawParsed: unknown, input: EngineInput<JobApplicationContent>): EngineOutput {
+    const parsed = rawParsed as {
+      coverLetter?: string;
+      resume?: string;
+      analysis?: {
+        detectedRole?: string;
+        detectedCompany?: string;
+        score?: number;
+        critique?: string;
+        suggestions?: string[];
+      };
+    };
     return {
       body: parsed.coverLetter || "",
       sections: {

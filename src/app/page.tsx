@@ -30,7 +30,7 @@ export default function Home() {
               className="w-full p-4 border-2 border-slate-100 rounded-2xl bg-slate-50 text-slate-700 font-medium focus:border-indigo-500 focus:ring-0 outline-none transition-all appearance-none cursor-pointer"
             >
               <option value="marketplace">🛍️ Marketplace Listing Generator</option>
-              <option value="job-application">📄 CV & Cover Letter Writer</option>
+              <option value="job-application">📄 Cover Letter Writer</option>
               <option value="job-comparison">⚖️ Job Suitability Matcher</option>
             </select>
           </div>

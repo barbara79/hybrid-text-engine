@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { EngineOutput } from "@/engine/core/types";
 import Link from "next/link";
 
 import { Audience, EngineContext, EngineModeId, Provider, Tone } from "@/engine/core/types";
 
 export default function JobApplicationPage() {
   const [formData, setFormData] = useState({ resume: "", jd: "" });
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<EngineOutput | null>(null);
   const [loading, setLoading] = useState(false);
 
   const handleGenerate = async () => {
@@ -15,6 +16,7 @@ export default function JobApplicationPage() {
     // Note: This uses the 'job-application' mode in your registry
     const res = await fetch("/api/generate", {
       method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         mode: EngineModeId.JOB_APPLICATION,
         provider: Provider.GEMINI,
@@ -23,7 +25,7 @@ export default function JobApplicationPage() {
         audience: Audience.RECRUITERS,
         content: {
           experience: formData.resume,
-          skills: [formData.jd],
+          jobDescription: formData.jd,
           role: "Auto-detect",
           company: "Auto-detect"
         }
