@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "ai:test-draft": "node scripts/ai-test-draft.mjs"
   },
   "dependencies": {
     "@google/genai": "^1.43.0",

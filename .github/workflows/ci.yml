@@ -42,11 +42,20 @@ jobs:
           # on legitimate comments that happen to start with these words; adjust the pattern below
           # as needed rather than treating it as gospel.
           PATTERN='//\s*(const|let|var|function|import|export|if\s*\(|return\b)|//\s*[a-zA-Z_$][a-zA-Z0-9_$]*\([^)]*\)\s*;?\s*$|TODO|FIXME|XXX'
-          MATCHES=$(grep -rnE "$PATTERN" src tests --include='*.ts' --include='*.tsx' || true)
-          if [ -n "$MATCHES" ]; then
-            echo "$MATCHES"
-            echo ""
-            echo "::error::Found commented-out code or TODO/FIXME markers. Remove dead code before merging, or resolve/track the TODO."
+          FOUND=0
+          # grep -n gives "file:line:content" - split on the first two colons only, so a colon
+          # inside the code itself (e.g. an object literal) doesn't shift the fields.
+          while IFS=: read -r file line content; do
+            [ -z "$file" ] && continue
+            FOUND=1
+            # ::error file=...,line=...:: makes GitHub annotate this exact line inline,
+            # both in the PR "Files changed" diff and in the workflow run's Checks tab.
+            escaped=$(echo "$content" | sed 's/%/%25/g; s/\r/%0D/g; s/\n/%0A/g')
+            echo "::error file=${file},line=${line}::Commented-out code or TODO/FIXME marker: ${escaped}"
+          done < <(grep -rnE "$PATTERN" src tests --include='*.ts' --include='*.tsx' || true)
+
+          if [ "$FOUND" -eq 1 ]; then
+            echo "Remove dead code before merging, or resolve/track the TODO. See annotations above (and inline on the PR diff)."
             exit 1
           fi
 
