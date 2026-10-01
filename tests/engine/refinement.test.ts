@@ -83,4 +83,26 @@ describe("Critic refinement", () => {
     expect(spy).toHaveBeenCalledTimes(1);
     expect(result.meta?.refinementApplied).toBe(false);
   });
+
+  it("does not refine when the first score meets the threshold", async () => {
+    const runner = new FakeRunner();
+    const spy = jest.spyOn(runner, "run").mockResolvedValue(reply(80));
+
+    const result = await runEngine(jobApplicationMode, jobInput, runner);
+
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(result.meta?.refinementApplied).toBe(false);
+  });
+
+  it("refines when the score is just below the threshold", async () => {
+    const runner = new FakeRunner();
+    const spy = jest
+      .spyOn(runner, "run")
+      .mockResolvedValueOnce(reply(79))
+      .mockResolvedValueOnce(reply(90));
+
+    await runEngine(jobApplicationMode, jobInput, runner);
+
+    expect(spy).toHaveBeenCalledTimes(2);
+  });
 });
