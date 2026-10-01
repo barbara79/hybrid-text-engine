@@ -10,9 +10,30 @@ export const MAX_ATTEMPTS = 3;
 
 type Analysis = NonNullable<EngineOutput["analysis"]>;
 
+// Model output is untrusted: only a finite number between 0 and 100 is a valid score.
+// Anything else (a string like "85/100", 250, -5, NaN) returns null.
+function normalizeScore(raw: unknown): number | null {
+  return typeof raw === "number" && Number.isFinite(raw) && raw >= 0 && raw <= 100
+    ? raw
+    : null;
+}
+
+const scoreOf = (output: EngineOutput): number | null =>
+  normalizeScore(output.analysis?.score);
+
+// A draft needs refinement when it has an analysis but its score is
+// invalid or below the threshold. Without an analysis (e.g. a parse error)
+// there is nothing to refine from.
+function needsRefinement(output: EngineOutput): boolean {
+  if (!output.analysis) return false;
+  const score = scoreOf(output);
+  return score === null || score < MIN_SCORE;
+}
+
 // The runner is stateless, so the refinement prompt must carry the original
 // task and the previous answer, not just the critique.
 function buildRefinementPrompt(originalPrompt: string, previousRaw: string, analysis: Analysis): string {
+  const suggestions = Array.isArray(analysis.suggestions) ? analysis.suggestions : [];
   return `
 ${originalPrompt}
 
@@ -23,7 +44,7 @@ ${previousRaw}
 QUALITY REVIEW OF THAT ANSWER:
 Score: ${analysis.score}/100
 Critique: ${analysis.critique}
-Suggestions: ${analysis.suggestions.join("; ")}
+Suggestions: ${suggestions.join("; ")}
 
 Rewrite your previous answer to address the review. Keep the same task and rules as above, do not invent facts, and return ONLY the JSON in the same format.
   `.trim();
@@ -40,21 +61,37 @@ export async function runEngine<TContent>(
   let raw = await runner.run(prompt);
   let result = mode.formatOutput(raw, input);
   let attempts = 1;
+  // True only when a refined draft actually replaced the previous one.
+  let refinementApplied = false;
 
   while (
     mode.refinable &&
     result.analysis &&
-    result.analysis.score < MIN_SCORE &&
+    needsRefinement(result) &&
     attempts < MAX_ATTEMPTS
   ) {
-    const refinedRaw = await runner.run(buildRefinementPrompt(prompt, raw, result.analysis));
-    const refined = mode.formatOutput(refinedRaw, input);
     attempts++;
 
-    if (!refined.analysis || refined.analysis.score < result.analysis.score) break;
+    let refinedRaw: string;
+    let refined: EngineOutput;
+    try {
+      refinedRaw = await runner.run(buildRefinementPrompt(prompt, raw, result.analysis));
+      refined = mode.formatOutput(refinedRaw, input);
+    } catch (err) {
+      // A failed refinement is optional work: keep the draft we already have.
+      console.error("Refinement failed, keeping previous result:", err);
+      break;
+    }
+
+    const before = scoreOf(result);
+    const after = scoreOf(refined);
+
+    // Discard the refined draft if it has no valid score or scores lower.
+    if (after === null || (before !== null && after < before)) break;
 
     raw = refinedRaw;
     result = refined;
+    refinementApplied = true;
   }
 
   return {
@@ -62,8 +99,8 @@ export async function runEngine<TContent>(
     meta: {
       ...result.meta,
       mode: result.meta?.mode ?? input.context,
-      refinementApplied: attempts > 1,
-      finalScore: result.analysis?.score,
+      refinementApplied,
+      finalScore: scoreOf(result) ?? undefined,
     },
   };
 }
